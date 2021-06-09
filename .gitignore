@@ -29,3 +29,7 @@ flutter_02.log
 .flutter-plugins-dependencies
 Flutter.podspec
 android/android.iml
+
+.fvm
+.DS_Store
+android/app/keys/

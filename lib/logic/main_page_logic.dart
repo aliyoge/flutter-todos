@@ -452,36 +452,36 @@ class MainPageLogic {
   }
 
   void checkUpdate(GlobalModel globalModel) {
-    if (Platform.isIOS) return;
-    final context = _model.context;
-    CancelToken cancelToken = CancelToken();
-    ApiService.instance.checkUpdate(
-      success: (UpdateInfoBean updateInfo) async {
-        final packageInfo = await PackageInfo.fromPlatform();
-        bool needUpdate = UpdateInfoBean.needUpdate(
-            packageInfo.version, updateInfo.appVersion);
-        if (needUpdate) {
-          showDialog(
-              context: context,
-              builder: (ctx2) {
-                return UpdateDialog(
-                  version: updateInfo.appVersion,
-                  updateUrl: updateInfo.downloadUrl,
-                  updateInfo: updateInfo.updateInfo,
-                  updateInfoColor: globalModel.logic.getBgInDark(),
-                  backgroundColor:
-                      globalModel.logic.getPrimaryGreyInDark(context),
-                );
-              });
-        }
-      },
-      error: (msg) {},
-      params: {
-        "language": globalModel.currentLocale.languageCode,
-        "appId": "001"
-      },
-      token: cancelToken,
-    );
+    // if (Platform.isIOS) return;
+    // final context = _model.context;
+    // CancelToken cancelToken = CancelToken();
+    // ApiService.instance.checkUpdate(
+    //   success: (UpdateInfoBean updateInfo) async {
+    //     final packageInfo = await PackageInfo.fromPlatform();
+    //     bool needUpdate = UpdateInfoBean.needUpdate(
+    //         packageInfo.version, updateInfo.appVersion);
+    //     if (needUpdate) {
+    //       showDialog(
+    //           context: context,
+    //           builder: (ctx2) {
+    //             return UpdateDialog(
+    //               version: updateInfo.appVersion,
+    //               updateUrl: updateInfo.downloadUrl,
+    //               updateInfo: updateInfo.updateInfo,
+    //               updateInfoColor: globalModel.logic.getBgInDark(),
+    //               backgroundColor:
+    //                   globalModel.logic.getPrimaryGreyInDark(context),
+    //             );
+    //           });
+    //     }
+    //   },
+    //   error: (msg) {},
+    //   params: {
+    //     "language": globalModel.currentLocale.languageCode,
+    //     "appId": "001"
+    //   },
+    //   token: cancelToken,
+    // );
   }
 
   ///在云端更新一个任务

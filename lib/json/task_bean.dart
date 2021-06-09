@@ -68,38 +68,38 @@ class TaskBean {
   static TaskBean fromMap(Map<String, dynamic> map) {
     TaskBean taskBean = new TaskBean();
     taskBean.id = map['id'];
-    taskBean.taskName = map['taskName'];
-    taskBean.taskType = map['taskType'];
-    taskBean.taskDetailNum = map['taskDetailNum'];
-    taskBean.taskStatus = map['taskStatus'];
+    taskBean.taskName = map['taskname'];
+    taskBean.taskType = map['tasktype'];
+    taskBean.taskDetailNum = map['taskdetailnum'];
+    taskBean.taskStatus = map['taskstatus'];
     taskBean.account = map['account'];
-    taskBean.uniqueId = map['uniqueId'];
-    taskBean.needUpdateToCloud = map['needUpdateToCloud'] ?? 'false';
-    taskBean.changeTimes = map['changeTimes'] ?? 0;
-    taskBean.overallProgress = double.parse(map['overallProgress']);
-    taskBean.createDate = map['createDate'];
-    taskBean.finishDate = map['finishDate'];
-    taskBean.startDate = map['startDate'];
-    taskBean.deadLine = map['deadLine'];
-    if(map['taskIconBean'] is String){
-      var taskIconBean = jsonDecode(map['taskIconBean']);
+    taskBean.uniqueId = map['uniqueid'];
+    taskBean.needUpdateToCloud = map['needupdatetocloud'] ?? 'false';
+    taskBean.changeTimes = map['changetimes'] ?? 0;
+    taskBean.overallProgress = double.parse(map['overallprogress']);
+    taskBean.createDate = map['createdate'];
+    taskBean.finishDate = map['finishdate'];
+    taskBean.startDate = map['startdate'];
+    taskBean.deadLine = map['deadline'];
+    if(map['taskiconbean'] is String){
+      var taskIconBean = jsonDecode(map['taskiconbean']);
       taskBean.taskIconBean = TaskIconBean.fromMap(taskIconBean);
     } else {
-      taskBean.taskIconBean = TaskIconBean.fromMap(map['taskIconBean']);
+      taskBean.taskIconBean = TaskIconBean.fromMap(map['taskiconbean']);
     }
-    if (map['detailList'] is String) {
-      var detailList = jsonDecode(map['detailList']);
+    if (map['detaillist'] is String) {
+      var detailList = jsonDecode(map['detaillist']);
       taskBean.detailList = TaskDetailBean.fromMapList(detailList);
     } else {
-      taskBean.detailList = TaskDetailBean.fromMapList(map['detailList']);
+      taskBean.detailList = TaskDetailBean.fromMapList(map['detaillist']);
     }
-    if (map['textColor'] is String){
-      var textColor = jsonDecode(map['textColor']);
+    if (map['textcolor'] is String){
+      var textColor = jsonDecode(map['textcolor']);
       taskBean.textColor = ColorBean.fromMap(textColor);
     } else {
-      taskBean.textColor = ColorBean.fromMap(map['textColor']);
+      taskBean.textColor = ColorBean.fromMap(map['textcolor']);
     }
-    taskBean.backgroundUrl = map['backgroundUrl'];
+    taskBean.backgroundUrl = map['backgroundurl'];
     return taskBean;
   }
 

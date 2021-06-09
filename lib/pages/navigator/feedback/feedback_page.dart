@@ -93,7 +93,7 @@ class FeedbackPage extends StatelessWidget {
                 ),
               ),
               child: Form(
-                autovalidateMode: AutovalidateMode.always,
+                autovalidate: true,
                 child: TextFormField(
                   expands: true,
                   maxLines: null,

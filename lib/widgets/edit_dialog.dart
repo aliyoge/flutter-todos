@@ -30,7 +30,7 @@ class EditDialog extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(20.0))),
       title: Text(title ?? ""),
       content: Form(
-        autovalidateMode: AutovalidateMode.always,
+        autovalidate: true,
         child: TextFormField(
           style: TextStyle(textBaseline: TextBaseline.alphabetic),
           initialValue: initialValue ?? "",

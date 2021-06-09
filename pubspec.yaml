@@ -45,7 +45,7 @@ dev_dependencies:
   #取色框
   flutter_colorpicker: ^0.2.5
   #图片缓存
-  cached_network_image: ^2.0.0
+  cached_network_image: 2.0.0
   #图片选取
   image_picker: ^0.6.6+4
   #权限申请
@@ -76,6 +76,11 @@ dev_dependencies:
   flutter_staggered_animations: ^0.1.2
   #滚轮选择
   wheel_chooser: ^0.1.0
+  #postgres驱动
+  postgres: 2.2.0
+
+override_dependencies:
+  flutter_cache_manager: 1.4.2
 
 
 # The following section is specific to Flutter.

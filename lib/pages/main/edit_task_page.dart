@@ -55,7 +55,7 @@ class EditTaskPage extends StatelessWidget {
         title: Container(
           height: 49,
           child: Form(
-            autovalidateMode: AutovalidateMode.always,
+            autovalidate: true,
             child: TextFormField(
               style: TextStyle(color: textColor,textBaseline: TextBaseline.alphabetic),
               textAlign: TextAlign.center,
