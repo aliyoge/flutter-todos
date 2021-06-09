@@ -228,18 +228,19 @@ class TaskBean {
 
   ///是否需要在云端更新
   bool getNeedUpdateToCloud(TaskBean taskBean) {
-    final uniqueId = taskBean.uniqueId;
-    final account = taskBean.account;
-    if (account == 'default') return false;
-    if (uniqueId == null) {
-      taskBean.needUpdateToCloud = 'true';
-      return true;
-    }
-    if (taskBean.needUpdateToCloud == null) {
-      taskBean.needUpdateToCloud = 'true';
-      return true;
-    }
-    return taskBean.needUpdateToCloud == 'true';
+    return false;
+    // final uniqueId = taskBean.uniqueId;
+    // final account = taskBean.account;
+    // if (account == 'default') return false;
+    // if (uniqueId == null) {
+    //   taskBean.needUpdateToCloud = 'true';
+    //   return true;
+    // }
+    // if (taskBean.needUpdateToCloud == null) {
+    //   taskBean.needUpdateToCloud = 'true';
+    //   return true;
+    // }
+    // return taskBean.needUpdateToCloud == 'true';
   }
 }
 
