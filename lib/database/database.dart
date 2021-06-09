@@ -18,8 +18,8 @@ class DBProvider {
 
   Future<PostgreSQLConnection> initDB() async {
     var connection = PostgreSQLConnection(
-        "47.102.41.199", 5433, "dbbd9aab2ead6f45f6aatodos",
-        username: "hwj", password: "rJ2Rgq8pnWf");
+        "47.102.41.197", 5433, "dbbd9aab2ead6f45f6aa28b25be882a465todos",
+        username: "hwj", password: "rJ2Rgq8pnWfBu3");
     await connection.open();
     try {
       await connection.execute("""

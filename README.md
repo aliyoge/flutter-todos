@@ -1,3 +1,7 @@
+将lib/database.dart文件的数据库地址改为自己的云数据库，可以实现数据同步.
+
+[MemFireDb](https://memfiredb.com/?utm_source=hwj)这个云数据库有很多免费额度，可以试用。
+
 ![image](https://user-images.githubusercontent.com/30992818/62599565-25c06000-b91f-11e9-8b5c-63efecdeeef6.png)
 
 
