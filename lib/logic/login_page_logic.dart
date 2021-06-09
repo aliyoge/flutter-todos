@@ -65,7 +65,7 @@ class LoginPageLogic {
         });
   }
 
-  void _onLoginRequest(BuildContext context) {
+  void _onLoginRequest(BuildContext context) async {
     final dbAddr = _model.addrController.text;
     final dbName = _model.dbNameController.text;
     final dbAccount = _model.dbAccountController.text;
@@ -77,12 +77,12 @@ class LoginPageLogic {
       return;
     }
 
-    SharedUtil.instance.saveString(Keys.dbAddr, dbAddr);
-    SharedUtil.instance.saveString(Keys.dbName, dbName);
-    SharedUtil.instance.saveString(Keys.dbAccount, dbAccount);
-    SharedUtil.instance.saveString(Keys.dbPasswd, dbPasswd);
-    SharedUtil.instance.saveString(Keys.account, dbAccount);
-    SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
+    await SharedUtil.instance.saveString(Keys.dbAddr, dbAddr);
+    await SharedUtil.instance.saveString(Keys.dbName, dbName);
+    await SharedUtil.instance.saveString(Keys.dbAccount, dbAccount);
+    await SharedUtil.instance.saveString(Keys.dbPasswd, dbPasswd);
+    await SharedUtil.instance.saveString(Keys.account, dbAccount);
+    await SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
 
     DBProvider.db.clear();
 

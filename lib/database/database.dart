@@ -103,7 +103,7 @@ class DBProvider {
     List<TaskBean> beans = [];
     beans.clear();
     var mapList = list.map((e) => e['todolist']).toList();
-    beans.addAll(TaskBean.fromMapList(mapList));
+    beans.addAll(TaskBean.fromPgMapList(mapList));
     return beans;
   }
 
@@ -116,7 +116,7 @@ class DBProvider {
     List<TaskBean> beans = [];
     beans.clear();
     beans
-        .addAll(TaskBean.fromMapList(list..map((e) => e['todolist']).toList()));
+        .addAll(TaskBean.fromPgMapList(list..map((e) => e['todolist']).toList()));
     return beans;
   }
 

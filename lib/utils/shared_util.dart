@@ -21,113 +21,109 @@ class SharedUtil {
 
   Future remove(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account = prefs.getString(Keys.account) ?? "default";
-    await prefs.remove(key + account);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.remove(key);
   }
 
-  Future saveString (String key, String value) async{
+  Future saveString(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(key == Keys.account){
+    if (key == Keys.account) {
       await prefs.setString(key, value);
       return;
     }
-    String account = prefs.getString(Keys.account) ?? "default";
-    await prefs.setString(key + account, value);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.setString(key, value);
   }
 
-  Future saveInt (String key, int value) async{
+  Future saveInt(String key, int value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account = prefs.getString(Keys.account) ?? "default";
-    await prefs.setInt(key + account, value);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.setInt(key, value);
   }
 
-  Future saveDouble (String key, double value) async{
+  Future saveDouble(String key, double value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account = prefs.getString(Keys.account) ?? "default";
-    await prefs.setDouble(key + account, value);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.setDouble(key, value);
   }
 
-  Future saveBoolean (String key, bool value) async{
+  Future saveBoolean(String key, bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    await prefs.setBool(key + account, value);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.setBool(key, value);
   }
 
-  Future saveStringList (String key, List<String> list) async{
+  Future saveStringList(String key, List<String> list) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    await prefs.setStringList(key + account, list);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.setStringList(key, list);
   }
 
-
-  Future<bool> readAndSaveList(String key, String data) async{
+  Future<bool> readAndSaveList(String key, String data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    List<String> strings = prefs.getStringList(key + account) ?? [];
-    if(strings.length >= 10) return false;
+    // String account = prefs.getString(Keys.account) ?? "default";
+    List<String> strings = prefs.getStringList(key) ?? [];
+    if (strings.length >= 10) return false;
     strings.add(data);
-    await prefs.setStringList(key + account, strings);
+    await prefs.setStringList(key, strings);
     return true;
   }
 
-  void readAndExchangeList(String key, String data, int index) async{
+  void readAndExchangeList(String key, String data, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    List<String> strings = prefs.getStringList(key + account) ?? [];
+    // String account = prefs.getString(Keys.account) ?? "default";
+    List<String> strings = prefs.getStringList(key) ?? [];
     strings[index] = data;
-    await prefs.setStringList(key + account, strings);
+    await prefs.setStringList(key, strings);
   }
 
-  void readAndRemoveList(String key,int index) async{
+  void readAndRemoveList(String key, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    List<String> strings = prefs.getStringList(key + account) ?? [];
+    // String account = prefs.getString(Keys.account) ?? "default";
+    List<String> strings = prefs.getStringList(key) ?? [];
     strings.removeAt(index);
-    await prefs.setStringList(key + account, strings);
+    await prefs.setStringList(key, strings);
   }
-
 
   //-----------------------------------------------------get----------------------------------------------------
 
-
-  Future<String> getString (String key) async{
+  Future<String> getString(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(key == Keys.account){
+    if (key == Keys.account) {
       return prefs.getString(key);
     }
-    String account =  prefs.getString(Keys.account) ?? "default";
-    return prefs.getString(key + account);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    return prefs.getString(key);
   }
 
-  Future<int> getInt (String key) async{
+  Future<int> getInt(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    return prefs.getInt(key + account);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    return prefs.getInt(key);
   }
 
-  Future<double> getDouble (String key) async{
+  Future<double> getDouble(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    return prefs.getDouble(key + account);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    return prefs.getDouble(key);
   }
 
-  Future<bool> getBoolean (String key) async{
+  Future<bool> getBoolean(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    return prefs.getBool(key + account)??false;
+    // String account = prefs.getString(Keys.account) ?? "default";
+    return prefs.getBool(key) ?? false;
   }
 
-  Future<List<String>> getStringList(String key) async{
+  Future<List<String>> getStringList(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    return prefs.getStringList(key + account);
+    // String account = prefs.getString(Keys.account) ?? "default";
+    return prefs.getStringList(key);
   }
 
-  Future<List<String>> readList(String key) async{
+  Future<List<String>> readList(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String account =  prefs.getString(Keys.account) ?? "default";
-    List<String> strings = prefs.getStringList(key + account) ?? [];
+    // String account = prefs.getString(Keys.account) ?? "default";
+    List<String> strings = prefs.getStringList(key) ?? [];
     return strings;
   }
-
 }

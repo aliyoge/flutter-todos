@@ -285,116 +285,116 @@ class _SynchronizeWidgetState extends State< SynchronizeWidget> {
 
 
   void getCloudTasks(String account, String token) async{
-    if(synFlag == SynFlag.failSynced) return;
-    ApiService.instance.getTasks(
-      params: {
-        'account':account,
-        'token':token
-      },
-      success: (CloudTaskBean bean) async{
-        final tasks = bean.taskList;
-        List<TaskBean> needUpdateTasks = [];
-        List<TaskBean> needCreateTasks = [];
-        for (var task in tasks) {
-          final uniqueId = task.uniqueId;
-          final localTask = await DBProvider.db.getTaskByUniqueId(uniqueId);
-          ///如果本地没有查到这个task，就需要在本地重新创建
-          if(localTask == null){
-            needCreateTasks.add(task);
-          } else {
-            task.id = localTask[0].id;
-            task.backgroundUrl = localTask[0].backgroundUrl;
-            task.textColor = localTask[0].textColor;
-            needUpdateTasks.add(task);
-          }
-        }
-        await DBProvider.db.updateTasks(needUpdateTasks);
-        await DBProvider.db.createTasks(needCreateTasks);
-        widget.mainPageModel.logic.getTasks().then((v){
-          widget.mainPageModel.needSyn = false;
-          widget.mainPageModel.refresh();
-        });
-        setState(() {
-          synFlag = SynFlag.noNeedSynced;
-        });
-      },
-      failed: (UploadTaskBean bean){
-        setState(() {
-          synFlag = SynFlag.failSynced;
-        });
-      },
-      error: (msg){
-        setState(() {
-          synFlag = SynFlag.failSynced;
-        });
-      },
-      token: cancelToken,
-    );
+    // if(synFlag == SynFlag.failSynced) return;
+    // ApiService.instance.getTasks(
+    //   params: {
+    //     'account':account,
+    //     'token':token
+    //   },
+    //   success: (CloudTaskBean bean) async{
+    //     final tasks = bean.taskList;
+    //     List<TaskBean> needUpdateTasks = [];
+    //     List<TaskBean> needCreateTasks = [];
+    //     for (var task in tasks) {
+    //       final uniqueId = task.uniqueId;
+    //       final localTask = await DBProvider.db.getTaskByUniqueId(uniqueId);
+    //       ///如果本地没有查到这个task，就需要在本地重新创建
+    //       if(localTask == null){
+    //         needCreateTasks.add(task);
+    //       } else {
+    //         task.id = localTask[0].id;
+    //         task.backgroundUrl = localTask[0].backgroundUrl;
+    //         task.textColor = localTask[0].textColor;
+    //         needUpdateTasks.add(task);
+    //       }
+    //     }
+    //     await DBProvider.db.updateTasks(needUpdateTasks);
+    //     await DBProvider.db.createTasks(needCreateTasks);
+    //     widget.mainPageModel.logic.getTasks().then((v){
+    //       widget.mainPageModel.needSyn = false;
+    //       widget.mainPageModel.refresh();
+    //     });
+    //     setState(() {
+    //       synFlag = SynFlag.noNeedSynced;
+    //     });
+    //   },
+    //   failed: (UploadTaskBean bean){
+    //     setState(() {
+    //       synFlag = SynFlag.failSynced;
+    //     });
+    //   },
+    //   error: (msg){
+    //     setState(() {
+    //       synFlag = SynFlag.failSynced;
+    //     });
+    //   },
+    //   token: cancelToken,
+    // );
   }
 
   ///这里有个隐藏问题，就是注册或者从登录页到主页来，登录操作相当于会执行两次，后续可以考虑解决这个问题
   void doLogin() async{
-    final account = await SharedUtil.instance.getString(Keys.account) ?? 'default';
-    if(account == 'default'){
-      setState(() {
-        synFlag = SynFlag.noNeedSynced;
-      });
-      return;
-    }
-    final password = await SharedUtil.instance.getString(Keys.password);
-    ApiService.instance.login(
-      params: {
-        "account": "$account",
-        "password": "$password"
-      },
-      success: (LoginBean loginBean) {
-        loginSucceed = true;
+//     final account = await SharedUtil.instance.getString(Keys.account) ?? 'default';
+//     if(account == 'default'){
+//       setState(() {
+//         synFlag = SynFlag.noNeedSynced;
+//       });
+//       return;
+//     }
+//     final password = await SharedUtil.instance.getString(Keys.password);
+//     ApiService.instance.login(
+//       params: {
+//         "account": "$account",
+//         "password": "$password"
+//       },
+//       success: (LoginBean loginBean) {
+//         loginSucceed = true;
 
-        this.account = account;
-        this.token = loginBean.token;
-        SharedUtil.instance.saveString(Keys.account, account).then((value){
-          SharedUtil.instance.saveString(Keys.currentUserName, loginBean.username);
-          SharedUtil.instance.saveString(Keys.token, loginBean.token);
-          SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
-          if(loginBean.avatarUrl != null){
-            String cloudAvatarFileName = loginBean.avatarUrl.split("/").last;
-            String localAvatarFileName = widget.mainPageModel.currentAvatarUrl.split("/").last;
-            if(cloudAvatarFileName != localAvatarFileName){
-              SharedUtil.instance.saveString(Keys.netAvatarPath, ApiStrategy.baseUrl + loginBean.avatarUrl);
-              SharedUtil.instance.saveInt(Keys.currentAvatarType, CurrentAvatarType.net);
-              widget.mainPageModel.currentAvatarUrl = ApiStrategy.baseUrl + loginBean.avatarUrl;
-              widget.mainPageModel.currentAvatarType = CurrentAvatarType.net;
-              widget.mainPageModel.logic.getCurrentAvatar();
-            }
-          }
-          widget.mainPageModel.currentUserName = loginBean.username;
-          ///检测是否需要进行本地与云端的数据同步
-          checkIfNeedSyn(account, loginBean.token);
-        });
-      },
-      failed: (LoginBean loginBean) {
-        SharedUtil.instance
-            .saveString(Keys.account, "default")
-            .then((v) {
-          SharedUtil.instance
-              .saveBoolean(Keys.hasLogged, false);
-        });
-        Navigator.of(context).pushAndRemoveUntil(
-            new MaterialPageRoute(builder: (context) {
-              return ProviderConfig.getInstance()
-                  .getLoginPage(isFirst: true);
-            }), (router) => router == null);
-//        setState(() {
-//          synFlag = SynFlag.failSynced;
-//        });
-      },
-      error: (msg) {
-        setState(() {
-          synFlag = SynFlag.failSynced;
-        });
-      },
-      token: cancelToken,
-    );
+//         this.account = account;
+//         this.token = loginBean.token;
+//         SharedUtil.instance.saveString(Keys.account, account).then((value){
+//           SharedUtil.instance.saveString(Keys.currentUserName, loginBean.username);
+//           SharedUtil.instance.saveString(Keys.token, loginBean.token);
+//           SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
+//           if(loginBean.avatarUrl != null){
+//             String cloudAvatarFileName = loginBean.avatarUrl.split("/").last;
+//             String localAvatarFileName = widget.mainPageModel.currentAvatarUrl.split("/").last;
+//             if(cloudAvatarFileName != localAvatarFileName){
+//               SharedUtil.instance.saveString(Keys.netAvatarPath, ApiStrategy.baseUrl + loginBean.avatarUrl);
+//               SharedUtil.instance.saveInt(Keys.currentAvatarType, CurrentAvatarType.net);
+//               widget.mainPageModel.currentAvatarUrl = ApiStrategy.baseUrl + loginBean.avatarUrl;
+//               widget.mainPageModel.currentAvatarType = CurrentAvatarType.net;
+//               widget.mainPageModel.logic.getCurrentAvatar();
+//             }
+//           }
+//           widget.mainPageModel.currentUserName = loginBean.username;
+//           ///检测是否需要进行本地与云端的数据同步
+//           checkIfNeedSyn(account, loginBean.token);
+//         });
+//       },
+//       failed: (LoginBean loginBean) {
+//         SharedUtil.instance
+//             .saveString(Keys.account, "default")
+//             .then((v) {
+//           SharedUtil.instance
+//               .saveBoolean(Keys.hasLogged, false);
+//         });
+//         Navigator.of(context).pushAndRemoveUntil(
+//             new MaterialPageRoute(builder: (context) {
+//               return ProviderConfig.getInstance()
+//                   .getLoginPage(isFirst: true);
+//             }), (router) => router == null);
+// //        setState(() {
+// //          synFlag = SynFlag.failSynced;
+// //        });
+//       },
+//       error: (msg) {
+//         setState(() {
+//           synFlag = SynFlag.failSynced;
+//         });
+//       },
+//       token: cancelToken,
+//     );
   }
 }
 
