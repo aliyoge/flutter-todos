@@ -2,13 +2,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 export 'package:todo_list/config/keys.dart';
 import 'package:todo_list/config/keys.dart';
 
-class SharedUtil{
-
+class SharedUtil {
   factory SharedUtil() => _getInstance();
 
   static SharedUtil get instance => _getInstance();
   static SharedUtil _instance;
-
 
   SharedUtil._internal() {
     //初始化
@@ -21,6 +19,11 @@ class SharedUtil{
     return _instance;
   }
 
+  Future remove(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String account = prefs.getString(Keys.account) ?? "default";
+    await prefs.remove(key + account);
+  }
 
   Future saveString (String key, String value) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -5,10 +5,10 @@ import 'package:sqflite/sqflite.dart';
 import 'package:todo_list/json/task_bean.dart';
 import 'package:todo_list/utils/shared_util.dart';
 
-class DBProvider {
-  DBProvider._();
+class LocalDBProvider {
+  LocalDBProvider._();
 
-  static final DBProvider db = DBProvider._();
+  static final LocalDBProvider db = LocalDBProvider._();
 
   Database _database;
 
@@ -52,18 +52,15 @@ class DBProvider {
         print("新版本:$newVersion");
         print("旧版本:$oldVersion");
         if (oldVersion < 2) {
-          await db.execute(
-              "ALTER TABLE TodoList ADD COLUMN changeTimes INTEGER DEFAULT 0");
+          await db.execute("ALTER TABLE TodoList ADD COLUMN changeTimes INTEGER DEFAULT 0");
         }
         if (oldVersion < 3) {
           await db.execute("ALTER TABLE TodoList ADD COLUMN uniqueId TEXT");
-          await db.execute(
-              "ALTER TABLE TodoList ADD COLUMN needUpdateToCloud TEXT");
+          await db.execute("ALTER TABLE TodoList ADD COLUMN needUpdateToCloud TEXT");
         }
         if (oldVersion < 4) {
           await db.execute("ALTER TABLE TodoList ADD COLUMN textColor TEXT");
-          await db
-              .execute("ALTER TABLE TodoList ADD COLUMN backgroundUrl TEXT");
+          await db.execute("ALTER TABLE TodoList ADD COLUMN backgroundUrl TEXT");
         }
       },
     );
@@ -82,11 +79,9 @@ class DBProvider {
   ///isDone为true表示查询已经完成的任务,否则表示未完成
   Future<List<TaskBean>> getTasks({bool isDone = false, String account}) async {
     final db = await database;
-    final theAccount =
-        await SharedUtil.instance.getString(Keys.account) ?? "default";
+    final theAccount = await SharedUtil.instance.getString(Keys.account) ?? "default";
     var list = await db.query("TodoList",
-        where: "account = ?" +
-            (isDone ? " AND overallProgress >= ?" : " AND overallProgress < ?"),
+        where: "account = ?" + (isDone ? " AND overallProgress >= ?" : " AND overallProgress < ?"),
         whereArgs: [account ?? theAccount, "1.0"]);
     List<TaskBean> beans = [];
     beans.clear();
@@ -97,10 +92,8 @@ class DBProvider {
   ///查询所有任务
   Future<List<TaskBean>> getAllTasks({String account}) async {
     final db = await database;
-    final theAccount =
-        await SharedUtil.instance.getString(Keys.account) ?? "default";
-    var list = await db.query("TodoList",
-        where: "account = ?", whereArgs: [account ?? theAccount]);
+    final theAccount = await SharedUtil.instance.getString(Keys.account) ?? "default";
+    var list = await db.query("TodoList", where: "account = ?", whereArgs: [account ?? theAccount]);
     List<TaskBean> beans = [];
     beans.clear();
     beans.addAll(TaskBean.fromMapList(list));
@@ -110,8 +103,7 @@ class DBProvider {
   Future updateTask(TaskBean taskBean) async {
     if (taskBean == null) return;
     final db = await database;
-    await db.update("TodoList", taskBean.toMap(),
-        where: "id = ?", whereArgs: [taskBean.id]);
+    await db.update("TodoList", taskBean.toMap(), where: "id = ?", whereArgs: [taskBean.id]);
     debugPrint("升级当前task:${taskBean.toMap()}");
   }
 
@@ -125,8 +117,7 @@ class DBProvider {
     final db = await database;
     final batch = db.batch();
     for (var task in taskBeans) {
-      batch.update("TodoList", task.toMap(),
-          where: "id = ?", whereArgs: [task.id]);
+      batch.update("TodoList", task.toMap(), where: "id = ?", whereArgs: [task.id]);
     }
     final results = await batch.commit();
     print("批量更新结果:$results");
@@ -146,8 +137,7 @@ class DBProvider {
   ///根据[uniqueId]查询一项任务
   Future<List<TaskBean>> getTaskByUniqueId(String uniqueId) async {
     final db = await database;
-    var tasks = await db
-        .query("TodoList", where: "uniqueId = ?", whereArgs: [uniqueId]);
+    var tasks = await db.query("TodoList", where: "uniqueId = ?", whereArgs: [uniqueId]);
     if (tasks.isEmpty) return null;
     return TaskBean.fromMapList(tasks);
   }
@@ -169,8 +159,7 @@ class DBProvider {
   ///通过加上百分号，进行模糊查询
   Future<List<TaskBean>> queryTask(String query) async {
     final db = await database;
-    final account =
-        await SharedUtil.instance.getString(Keys.account) ?? "default";
+    final account = await SharedUtil.instance.getString(Keys.account) ?? "default";
     var list = await db.query("TodoList",
         where: "account = ? AND (taskName LIKE ? "
             "OR detailList LIKE ? "

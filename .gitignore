@@ -33,3 +33,5 @@ android/android.iml
 .fvm
 .DS_Store
 android/app/keys/
+
+.vscode

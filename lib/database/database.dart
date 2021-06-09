@@ -1,25 +1,57 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:postgres/postgres.dart';
+import 'package:todo_list/database/database_local.dart';
 import 'package:todo_list/json/task_bean.dart';
+import 'package:todo_list/utils/shared_util.dart';
 
 class DBProvider {
   DBProvider._();
 
   static final DBProvider db = DBProvider._();
 
+  clear() {
+    _local = null;
+    _database = null;
+  }
+
+  bool _local;
+
   PostgreSQLConnection _database;
 
   Future<PostgreSQLConnection> get database async {
+    if (_local != null && _local) return null;
     if (_database != null) return _database;
     _database = await initDB();
     return _database;
   }
 
   Future<PostgreSQLConnection> initDB() async {
+    _local = true;
+
+    var dbAddr = await SharedUtil.instance.getString(Keys.dbAddr);
+    String dbIp, dbName, dbAccount, dbPasswd;
+    int dbPort;
+    if (dbAddr != null && dbAddr != '') {
+      var a = dbAddr.split(':');
+      if (a == null || a.length < 2) {
+        return null;
+      }
+      dbIp = a[0];
+      dbPort = int.parse(a[1]);
+      dbName = await SharedUtil.instance.getString(Keys.dbName);
+      dbAccount = await SharedUtil.instance.getString(Keys.dbAccount);
+      dbPasswd = await SharedUtil.instance.getString(Keys.dbPasswd);
+      _local = false;
+    }
+
+    if (_local) {
+      return null;
+    }
+
     var connection = PostgreSQLConnection(
-        "47.102.41.197", 5433, "dbbd9aab2ead6f45f6aa28b25be882a465todos",
-        username: "hwj", password: "rJ2Rgq8pnWfBu3");
+        dbIp, dbPort, dbName,
+        username: dbAccount, password: dbPasswd);
     await connection.open();
     try {
       await connection.execute("""
@@ -52,6 +84,8 @@ class DBProvider {
   ///创建一项任务
   Future createTask(TaskBean task) async {
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.createTask(task);
+
     var sql = getInsertSql('todolist', task.toMap());
     await db.execute(sql, substitutionValues: task.toMap());
   }
@@ -61,6 +95,8 @@ class DBProvider {
   ///isDone为true表示查询已经完成的任务,否则表示未完成
   Future<List<TaskBean>> getTasks({bool isDone = false, String account}) async {
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.getTasks(isDone: isDone, account: account);
+
     var list = await db.mappedResultsQuery(isDone
         ? "SELECT * FROM todolist WHERE cast(overallProgress as float) >= 1.0"
         : "SELECT * FROM todolist WHERE cast(overallProgress as float) < 1.0");
@@ -74,6 +110,8 @@ class DBProvider {
   ///查询所有任务
   Future<List<TaskBean>> getAllTasks({String account}) async {
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.getAllTasks(account: account);
+
     var list = await db.mappedResultsQuery("SELECT * FROM todolist");
     List<TaskBean> beans = [];
     beans.clear();
@@ -85,6 +123,8 @@ class DBProvider {
   Future updateTask(TaskBean taskBean) async {
     if (taskBean == null) return;
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.updateTask(taskBean);
+
     var sql = getUpdateSql(
         'todolist',
         taskBean.toMap(),
@@ -96,6 +136,8 @@ class DBProvider {
 
   Future deleteTask(int id) async {
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.deleteTask(id);
+
     db.execute("DELETE FROM todolist WHERE id = ${id}");
   }
 
@@ -116,6 +158,8 @@ class DBProvider {
   ///根据[uniqueId]查询一项任务
   Future<List<TaskBean>> getTaskByUniqueId(String uniqueId) async {
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.getTaskByUniqueId(uniqueId);
+
     var tasks = await db.mappedResultsQuery(
         "SELECT * FROM todolist WHERE uniqueId = ${uniqueId}");
     if (tasks.isEmpty) return null;
@@ -139,6 +183,8 @@ class DBProvider {
   ///通过加上百分号，进行模糊查询
   Future<List<TaskBean>> queryTask(String query) async {
     final db = await database;
+    if (db == null) return await LocalDBProvider.db.queryTask(query);
+
     var list = await db.mappedResultsQuery(
         "SELECT * FROM todolist WHERE taskName LIKE '%${query}%' "
         "OR detailList LIKE '%${query}%' "

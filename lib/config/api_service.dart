@@ -179,20 +179,20 @@ class ApiService {
     Function error,
     CancelToken token,
   }) {
-    ApiStrategy.getInstance().post(
-        "fUser/login",
-        (data) {
-          LoginBean loginBean = LoginBean.fromMap(data);
-          if (loginBean.status == requestSucceed) {
-            success(loginBean);
-          } else {
-            failed(loginBean);
-          }
-        },
-        params: params,
-        errorCallBack: (errorMessage) {
-          error(errorMessage);
-        },token: token);
+    // ApiStrategy.getInstance().post(
+    //     "fUser/login",
+    //     (data) {
+    //       LoginBean loginBean = LoginBean.fromMap(data);
+    //       if (loginBean.status == requestSucceed) {
+    //         success(loginBean);
+    //       } else {
+    //         failed(loginBean);
+    //       }
+    //     },
+    //     params: params,
+    //     errorCallBack: (errorMessage) {
+    //       error(errorMessage);
+    //     },token: token);
   }
 
   ///修改用户名

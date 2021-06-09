@@ -27,24 +27,22 @@ class LoginWidget extends StatelessWidget {
               children: <Widget>[
                 BottomToTopWidget(
                   child: TextFormField(
-                    validator: (email) =>
-                        loginPageModel.logic.validatorEmail(email),
                     keyboardType: TextInputType.text,
-                    controller: loginPageModel.emailController,
+                    controller: loginPageModel.addrController,
                     textDirection: TextDirection.ltr,
                     style: TextStyle(textBaseline: TextBaseline.alphabetic),
                     decoration: InputDecoration(
-                        hintText: IntlLocalizations.of(context).inputEmail,
-                        labelText: IntlLocalizations.of(context).email,
+                        hintText: '输入连接IP:端口号',
+                        labelText: '连接地址',
                         labelStyle: TextStyle(fontWeight: FontWeight.bold),
                         prefixIcon: Icon(
-                          Icons.email,
+                          Icons.http,
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.cancel),
                           onPressed: () => Future.delayed(
                             Duration(milliseconds: 100),
-                            () => loginPageModel.emailController?.clear(),
+                            () => loginPageModel.addrController?.clear(),
                           ),
                         )),
                   ),
@@ -52,30 +50,62 @@ class LoginWidget extends StatelessWidget {
                 ),
                 BottomToTopWidget(
                   child: TextFormField(
-                    validator: (password) =>
-                        loginPageModel.logic.validatePassword(password),
-                    controller: loginPageModel.passwordController,
+                    keyboardType: TextInputType.text,
+                    controller: loginPageModel.dbNameController,
+                    textDirection: TextDirection.ltr,
+                    style: TextStyle(textBaseline: TextBaseline.alphabetic),
+                    decoration: InputDecoration(
+                        hintText: '输入数据库名',
+                        labelText: '数据库名',
+                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                        prefixIcon: Icon(
+                          Icons.data_usage,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.cancel),
+                          onPressed: () => Future.delayed(
+                            Duration(milliseconds: 100),
+                            () => loginPageModel.dbNameController?.clear(),
+                          ),
+                        )),
+                  ),
+                  index: 0,
+                ),
+                BottomToTopWidget(
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
+                    controller: loginPageModel.dbAccountController,
+                    textDirection: TextDirection.ltr,
+                    style: TextStyle(textBaseline: TextBaseline.alphabetic),
+                    decoration: InputDecoration(
+                        hintText: '输入用户名',
+                        labelText: '用户名',
+                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                        prefixIcon: Icon(
+                          Icons.account_circle,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.cancel),
+                          onPressed: () => Future.delayed(
+                            Duration(milliseconds: 100),
+                            () => loginPageModel.dbAccountController?.clear(),
+                          ),
+                        )),
+                  ),
+                  index: 0,
+                ),
+                BottomToTopWidget(
+                  child: TextFormField(
+                    controller: loginPageModel.dbPasswdController,
                     keyboardType: TextInputType.text,
                     textDirection: TextDirection.ltr,
                     style: TextStyle(textBaseline: TextBaseline.alphabetic),
                     decoration: InputDecoration(
-                      hintText: IntlLocalizations.of(context).inputPassword,
-                      labelText: IntlLocalizations.of(context).password,
+                      hintText: '输入数据库密码',
+                      labelText: '密码',
                       labelStyle: TextStyle(fontWeight: FontWeight.bold),
                       prefixIcon: Icon(
                         Icons.lock,
-                      ),
-
-                      suffixIcon: FlatButton(
-                        highlightColor: primaryColorLight,
-                        colorBrightness: Brightness.dark,
-                        splashColor: Colors.grey,
-                        onPressed: loginPageModel.logic.onForget,
-                        child: Text(
-                          IntlLocalizations.of(context).forget,
-                          style: TextStyle(color: Colors.black),
-                          textAlign: TextAlign.center,
-                        ),
                       ),
                     ),
                     obscureText: true,
@@ -103,8 +133,7 @@ class LoginWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
                       onPressed: loginPageModel.logic.onLogin,
                     ),
                   ),
@@ -131,8 +160,7 @@ class LoginWidget extends StatelessWidget {
                         ),
                       ),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                          side: BorderSide(color: primaryColorDark)),
+                          borderRadius: BorderRadius.circular(40.0), side: BorderSide(color: primaryColorDark)),
                       onPressed: loginPageModel.logic.onRegister,
                     ),
                   ),
@@ -140,18 +168,19 @@ class LoginWidget extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                loginPageModel.isFirst ? BottomToTopWidget(
-                    child: FlatButton(
-                      color: primaryColor,
-                      highlightColor: primaryColorLight,
-                      colorBrightness: Brightness.dark,
-                      splashColor: Colors.grey,
-                      child: Text(IntlLocalizations.of(context).skip),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      onPressed: loginPageModel.logic.onSkip,
-                    ),
-                    index: 3) : Container(),
+                loginPageModel.isFirst
+                    ? BottomToTopWidget(
+                        child: FlatButton(
+                          color: primaryColor,
+                          highlightColor: primaryColorLight,
+                          colorBrightness: Brightness.dark,
+                          splashColor: Colors.grey,
+                          child: Text(IntlLocalizations.of(context).skip),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                          onPressed: loginPageModel.logic.onSkip,
+                        ),
+                        index: 3)
+                    : Container(),
               ],
             ),
           ),

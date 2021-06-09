@@ -1,13 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:todo_list/config/api_service.dart';
-import 'package:todo_list/config/api_strategy.dart';
 import 'package:todo_list/config/provider_config.dart';
 import 'package:todo_list/database/database.dart';
-import 'package:todo_list/i10n/localization_intl.dart';
-import 'package:todo_list/json/login_bean.dart';
 import 'package:todo_list/model/all_model.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_list/utils/my_encrypt_util.dart';
+import 'package:todo_list/pages/navigator/settings/about/webview_page.dart';
 import 'package:todo_list/utils/shared_util.dart';
 import 'package:todo_list/widgets/net_loading_widget.dart';
 
@@ -22,47 +18,13 @@ class LoginPageLogic {
     _model.refresh();
   }
 
-  String validatorEmail(String email) {
-    final context = _model.context;
-    _model.isEmailOk = false;
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (email.isEmpty)
-      return IntlLocalizations.of(context).emailCantBeEmpty;
-    else if (!regex.hasMatch(email))
-      return IntlLocalizations.of(context).emailIncorrectFormat;
-    else {
-      _model.isEmailOk = true;
-      return null;
-    }
-  }
-
-  String validatePassword(String password) {
-    final context = _model.context;
-    _model.isPasswordOk = false;
-    if (password.isEmpty) {
-      return IntlLocalizations.of(context).passwordCantBeEmpty;
-    } else if (password.length < 8) {
-      return IntlLocalizations.of(context).passwordTooShort;
-    } else if (password.length > 20) {
-      return IntlLocalizations.of(context).passwordTooLong;
-    } else {
-      _model.isPasswordOk = true;
-      return null;
-    }
-  }
-
   void onLogin() {
     final context = _model.context;
-    _model.formKey.currentState.validate();
-    if (!_model.isEmailOk || !_model.isPasswordOk) {
-      _showDialog(IntlLocalizations.of(context).checkYourEmailOrPassword, context);
-      return;
-    }
-    showDialog(context: _model.context, builder: (ctx){
-      return NetLoadingWidget();
-    });
+    showDialog(
+        context: _model.context,
+        builder: (ctx) {
+          return NetLoadingWidget();
+        });
     _onLoginRequest(context);
   }
 
@@ -73,19 +35,20 @@ class LoginPageLogic {
   }
 
   void onRegister() {
-    Navigator.of(_model.context).push(new CupertinoPageRoute(builder: (ctx) {
-        return ProviderConfig.getInstance().getRegisterPage();
-    }));
+    Navigator.of(_model.context).push(CupertinoPageRoute(builder: (ctx) {
+                          return WebViewPage(
+                            'https://memfiredb.com/db?utm_source=todoshwj',
+                            title: 'MemFireDb',
+                          );
+                        }));
   }
 
-  void onSkip(){
+  void onSkip() {
     SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
-    Navigator.of(_model.context).pushAndRemoveUntil(
-        new MaterialPageRoute(builder: (context) {
-            return ProviderConfig.getInstance().getMainPage();
-        }), (router) => router == null);
+    Navigator.of(_model.context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context) {
+      return ProviderConfig.getInstance().getMainPage();
+    }), (router) => router == null);
   }
-
 
   void _showDialog(String text, BuildContext context) {
     showDialog(
@@ -103,47 +66,28 @@ class LoginPageLogic {
   }
 
   void _onLoginRequest(BuildContext context) {
+    final dbAddr = _model.addrController.text;
+    final dbName = _model.dbNameController.text;
+    final dbAccount = _model.dbAccountController.text;
+    final dbPasswd = _model.dbPasswdController.text;
+    if (dbAddr == null || dbName == null || dbAccount == null || dbPasswd == null ||
+        dbAddr == '' || dbName == '' || dbAccount == '' || dbPasswd == '') {
+      Navigator.of(context).pop();
+      _showDialog('请将数据库资料填写完整', context);
+      return;
+    }
 
-    final account = _model.emailController.text;
-    final password = _model.passwordController.text;
-    final encryptPassword = EncryptUtil.instance.encrypt(password);
+    SharedUtil.instance.saveString(Keys.dbAddr, dbAddr);
+    SharedUtil.instance.saveString(Keys.dbName, dbName);
+    SharedUtil.instance.saveString(Keys.dbAccount, dbAccount);
+    SharedUtil.instance.saveString(Keys.dbPasswd, dbPasswd);
+    SharedUtil.instance.saveString(Keys.account, dbAccount);
+    SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
 
-    ApiService.instance.login(
-      params: {
-        "account": "$account",
-        "password": "$encryptPassword"
-      },
-      success: (LoginBean loginBean) {
-        SharedUtil.instance.saveString(Keys.account, account).then((value){
-          SharedUtil.instance.saveString(Keys.password, encryptPassword);
-          SharedUtil.instance.saveString(Keys.currentUserName, loginBean.username);
-          SharedUtil.instance.saveString(Keys.token, loginBean.token);
-          SharedUtil.instance.saveBoolean(Keys.hasLogged, true);
-          if(loginBean.avatarUrl != null){
-            SharedUtil.instance.saveString(Keys.netAvatarPath, ApiStrategy.baseUrl + loginBean.avatarUrl);
-            SharedUtil.instance.saveInt(Keys.currentAvatarType, CurrentAvatarType.net);
-          }
-        }).then((v){
-          DBProvider.db.updateAccount(account).then((v){
-            Navigator.of(context).pushAndRemoveUntil(
-                new MaterialPageRoute(
-                    builder: (context){
-                      return ProviderConfig.getInstance().getMainPage();
-                    }),
-                    (router) => router == null);
-          });
-        });
+    DBProvider.db.clear();
 
-      },
-      failed: (LoginBean loginBean) {
-        Navigator.of(context).pop();
-        _showDialog(loginBean.description, context);
-      },
-      error: (msg) {
-        Navigator.of(context).pop();
-        _showDialog(msg, context);
-      },
-      token: _model.cancelToken,
-    );
+    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context) {
+      return ProviderConfig.getInstance().getMainPage();
+    }), (router) => router == null);
   }
 }

@@ -71,6 +71,7 @@ class _SynchronizeWidgetState extends State< SynchronizeWidget> {
 
 
   Widget getSynWidget(SynFlag synFlag){
+    synFlag = SynFlag.noNeedSynced;
     switch(synFlag){
       case SynFlag.hasNotSynced:
         return Container(

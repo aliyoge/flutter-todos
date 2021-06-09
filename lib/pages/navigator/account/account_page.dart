@@ -88,22 +88,22 @@ class AccountPage extends StatelessWidget {
                         highlightColor: primaryColorLight,
                         colorBrightness: Brightness.dark,
                         splashColor: Colors.grey,
-                        child: Text(IntlLocalizations.of(context).logout),
+                        child: Text('退出账号'),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)),
                         onPressed: model.logic.onLogoutPressed,
                       ),
-                      FlatButton(
-                        color: primaryColor,
-                        highlightColor: primaryColorLight,
-                        colorBrightness: Brightness.dark,
-                        splashColor: Colors.grey,
-                        child:
-                            Text(IntlLocalizations.of(context).resetPassword),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        onPressed: model.logic.onResetPasswordPressed,
-                      )
+                      // FlatButton(
+                      //   color: primaryColor,
+                      //   highlightColor: primaryColorLight,
+                      //   colorBrightness: Brightness.dark,
+                      //   splashColor: Colors.grey,
+                      //   child:
+                      //       Text(IntlLocalizations.of(context).resetPassword),
+                      //   shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(20.0)),
+                      //   onPressed: model.logic.onResetPasswordPressed,
+                      // )
                     ],
                   ),
                 ),

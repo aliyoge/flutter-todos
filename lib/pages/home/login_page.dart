@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list/i10n/localization_intl.dart';
 import 'package:todo_list/json/color_bean.dart';
 import 'package:todo_list/model/global_model.dart';
 import 'package:todo_list/model/login_page_model.dart';
@@ -28,7 +27,7 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: bgColor,
         title: Text(
-          IntlLocalizations.of(context).login,
+          '设置云数据库',
           style: TextStyle(color: iconColor),
         ),
         elevation: 0.0,

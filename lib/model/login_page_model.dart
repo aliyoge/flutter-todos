@@ -11,11 +11,13 @@ class LoginPageModel extends ChangeNotifier{
   String currentAnimation = "move";
   bool showLoginWidget = true;
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController addrController = TextEditingController();
+  TextEditingController dbNameController = TextEditingController();
+  TextEditingController dbAccountController = TextEditingController();
+  TextEditingController dbPasswdController = TextEditingController();
 
-  bool isEmailOk = false;
-  bool isPasswordOk = false;
+  // bool isEmailOk = false;
+  // bool isPasswordOk = false;
   bool isLoginNow = false;
 
   ///表示登录页面是不是第一个页面
@@ -38,8 +40,10 @@ class LoginPageModel extends ChangeNotifier{
 
   @override
   void dispose(){
-    emailController.dispose();
-    passwordController.dispose();
+    addrController.dispose();
+    dbNameController.dispose();
+    dbAccountController.dispose();
+    dbPasswdController.dispose();
     cancelToken?.cancel();
     super.dispose();
     debugPrint("LoginPageModel销毁了");
